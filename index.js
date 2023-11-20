@@ -11,7 +11,7 @@ app.use(
 
 app.use('/', require('./routes/user'));
 
-app.get('/', (req, res) => {
+app.get('/home', (req, res) => {
     res.send('Hello World!');
 });
 
