@@ -14,4 +14,8 @@ router.post('/register', (req, res) => {
     loginController.register(req, res);
 });
 
+router.get('/:id/getUser', (req, res) => {
+    loginController.getUser(req, res);
+});
+
 module.exports = router;

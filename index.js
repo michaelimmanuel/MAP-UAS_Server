@@ -10,6 +10,7 @@ app.use(
 );
 
 app.use('/', require('./routes/user'));
+app.use('/', require('./routes/transaction'));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

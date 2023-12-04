@@ -20,7 +20,7 @@ async function register(req, res) {
         },
     });
 
-    res.status(200).json({ "msg" : "success" });
+    res.status(200).json(user);
 
 }
 
@@ -58,13 +58,35 @@ async function login(req, res) {
             userId: user.id,
         },
     });
+    console.log(user.id, token);
 
-    // send cookie to user
-    res.cookie('token', token, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
+    // send user id and token back to the client
+    res.status(200).json({ id: user.id, token, name: user.name });
+
+}
+
+async function getProfile(req, res) {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+        where: {
+            id: parseInt(id),
+        },
     });
-    res.status(200).json({ "msg" : "success" });
+
+    res.status(200).json(user);
+}
+
+async function logout(req, res) {
+    const { id } = req.params;
+
+    // Delete the token from the database
+    await prisma.token.deleteMany({
+        where: {
+            userId: parseInt(id),
+        },
+    });
+
+    res.status(200).json({ message: 'Logout successful' });
 }
 
 module.exports = {
