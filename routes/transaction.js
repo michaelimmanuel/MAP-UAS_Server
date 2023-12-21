@@ -19,4 +19,8 @@ router.get('/users/:id/spending/month', (req, res) => {
 router.get('/users/:id/spendingbyday', (req, res) => {
     transactionController.getDaySpending(req, res);
 });
+
+router.get('/users/:id/monthlyspending', (req, res) => {
+    transactionController.getDailySpending(req, res);
+});
 module.exports = router;

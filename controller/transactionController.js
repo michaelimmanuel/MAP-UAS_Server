@@ -145,9 +145,60 @@ async function getDaySpending(req, res) {
 
 }
 
+async function getDailySpending(req, res) {
+    const { id } = req.params;
+    const { year } = req.query;
+
+    const targetYear = parseInt(year);
+
+    // get spending by date
+    const spending = await prisma.transaction.findMany({
+        where: {
+            userId: parseInt(id),
+            type: "spending",
+        },
+    });
+
+    // reduce using regex to get spending by month
+    const groupedSpendings = spending.reduce((result, spending) => {
+        const date = new Date(spending.date.replace(/(\d+)-(\d+)-(\d+)/, '$3-$2-$1'));
+        const year = date.getFullYear();
+        const monthYear = `${date.getMonth() + 1}-${year}`;
+      
+        if (year === targetYear) {
+          if (!result[monthYear]) {
+            result[monthYear] = [];
+          }
+      
+          result[monthYear].push(spending);
+        }
+      
+        return result;
+      }, {});
+
+    //   calculate total spending per month and store in in array
+    const spendingByMonth = Object.keys(groupedSpendings).map((month) => {
+        const total = groupedSpendings[month].reduce((total, spending) => {
+          return total + spending.amount;
+        }, 0);
+      
+        return {
+          month,
+          total,
+        };
+      });
+
+      console.log(spendingByMonth)
+
+
+    return res.status(200).json(spendingByMonth);
+
+}
+
 module.exports = {
     createSpending,
     getSpendingByDay,
     getSpendingByMonth,
-    getDaySpending
+    getDaySpending,
+    getDailySpending,
 };
