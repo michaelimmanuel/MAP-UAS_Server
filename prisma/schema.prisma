@@ -26,11 +26,11 @@ model Transaction{
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  name     String
+  name      String
   amount    Float
-  desc     String
-  type     String
-  date      DateTime
+  desc      String
+  type      String
+  date      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
